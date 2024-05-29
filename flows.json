@@ -1,0 +1,653 @@
+[
+    {
+        "id": "c4ad50f8754a7d5a",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dd2c9a78c8dce231",
+        "type": "ui_gauge",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "group": "cef047fad6646109",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Intensity Level",
+        "label": "units",
+        "format": "{{payload}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1000,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "02f4861807c44a4b",
+        "type": "ui_chart",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "group": "cef047fad6646109",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Intensity Variance",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 550,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b5256f2cd6613803",
+        "type": "ui_text",
+        "z": "c4ad50f8754a7d5a",
+        "group": "cef047fad6646109",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Max Intensity from -",
+        "format": "{{msg.name}}",
+        "layout": "row-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1010,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "988310dc1599085c",
+        "type": "mqtt in",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "topic": "ENTC-Admin-IntensityL",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5a443cb651cea728",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "8e9b2d85f0d45a2f",
+                "02f4861807c44a4b"
+            ]
+        ]
+    },
+    {
+        "id": "08807fac55d60631",
+        "type": "mqtt in",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "topic": "ENTC-Admin-IntensityR",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5a443cb651cea728",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 400,
+        "wires": [
+            [
+                "061a6a30a8b095a7",
+                "02f4861807c44a4b"
+            ]
+        ]
+    },
+    {
+        "id": "8e9b2d85f0d45a2f",
+        "type": "change",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ldrL",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 260,
+        "wires": [
+            [
+                "03c3730a93a163fe"
+            ]
+        ]
+    },
+    {
+        "id": "061a6a30a8b095a7",
+        "type": "change",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "ldrR",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 320,
+        "wires": [
+            [
+                "03c3730a93a163fe"
+            ]
+        ]
+    },
+    {
+        "id": "03c3730a93a163fe",
+        "type": "function",
+        "z": "c4ad50f8754a7d5a",
+        "name": "maxFunction",
+        "func": "let ldrL = global.get(\"ldrL\");\nlet ldrR = global.get(\"ldrR\");\nlet max;\nlet name;\n\nif (ldrL > ldrR){\n    max = ldrL;\n    name = \"Left LDR\";\n}else{\n    max = ldrR;\n    name = \"Right LDR\";\n}\n\nreturn{\n    payload:max,\n    name:name\n};",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 280,
+        "wires": [
+            [
+                "b5256f2cd6613803",
+                "dd2c9a78c8dce231"
+            ]
+        ]
+    },
+    {
+        "id": "4d8af1c28a07958c",
+        "type": "mqtt in",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "topic": "ENTC-Admin-Temperature",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "5a443cb651cea728",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "86199459f6738a59",
+                "e23d56dbfe7055d5"
+            ]
+        ]
+    },
+    {
+        "id": "86199459f6738a59",
+        "type": "ui_gauge",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "group": "023d148b73d0f1e5",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "units",
+        "format": "{{payload}}",
+        "min": "-40",
+        "max": "80",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 390,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "e23d56dbfe7055d5",
+        "type": "ui_chart",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "group": "023d148b73d0f1e5",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature Variance",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "-40",
+        "ymax": "80",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 420,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6ea62d5d88cfad70",
+        "type": "ui_slider",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "label": "Minimum Angle",
+        "tooltip": "payload",
+        "group": "4ad3c7e7c34b97e3",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": "120",
+        "step": 1,
+        "className": "",
+        "x": 700,
+        "y": 540,
+        "wires": [
+            [
+                "fabf9b742cb010d0"
+            ]
+        ]
+    },
+    {
+        "id": "96bfcf3783b359f2",
+        "type": "ui_slider",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "label": "Controlling Factor",
+        "tooltip": "",
+        "group": "4ad3c7e7c34b97e3",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": "1",
+        "step": "0.01",
+        "className": "",
+        "x": 730,
+        "y": 620,
+        "wires": [
+            [
+                "0ffc87cbd0b976a7"
+            ]
+        ]
+    },
+    {
+        "id": "62f56e2d9235456e",
+        "type": "ui_dropdown",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "label": "Select the Medicine Type",
+        "tooltip": "",
+        "place": "Select",
+        "group": "4ad3c7e7c34b97e3",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Medicine A",
+                "value": 1,
+                "type": "num"
+            },
+            {
+                "label": "Medicine B",
+                "value": 2,
+                "type": "num"
+            },
+            {
+                "label": "Medicine C",
+                "value": 3,
+                "type": "num"
+            },
+            {
+                "label": "Medicine D",
+                "value": 4,
+                "type": "num"
+            },
+            {
+                "label": "Custom Medicine",
+                "value": "5",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 150,
+        "y": 660,
+        "wires": [
+            [
+                "40aadbe9e0d39afb",
+                "895017b6cd8d2b98"
+            ]
+        ]
+    },
+    {
+        "id": "40aadbe9e0d39afb",
+        "type": "function",
+        "z": "c4ad50f8754a7d5a",
+        "name": "minAngleFunction",
+        "func": "if(msg.payload == \"1\"){\n    return{payload:\"10\"}\n}else if(msg.payload == \"2\"){\n    return{payload:\"60\"}\n}else if(msg.payload == \"3\"){\n    return{payload:\"90\"}\n}else if(msg.payload == \"4\"){\n    return{payload:\"120\"}\n}else{\n    return{payload:\"30\"}\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 600,
+        "wires": [
+            [
+                "6ea62d5d88cfad70"
+            ]
+        ]
+    },
+    {
+        "id": "895017b6cd8d2b98",
+        "type": "function",
+        "z": "c4ad50f8754a7d5a",
+        "name": "controlFacFunction",
+        "func": "if(msg.payload == \"1\"){\n    return{payload:\"0.10\"}\n}else if(msg.payload == \"2\"){\n    return{payload:\"0.25\"}\n}else if(msg.payload == \"3\"){\n    return{payload:\"0.5\"}\n}else if(msg.payload == \"4\"){\n    return{payload:\"1\"}\n}else{\n    return{payload:\"0.75\"}\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 700,
+        "wires": [
+            [
+                "96bfcf3783b359f2"
+            ]
+        ]
+    },
+    {
+        "id": "fabf9b742cb010d0",
+        "type": "mqtt out",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "topic": "ENTC-Admin-MinAngleAdjust",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5a443cb651cea728",
+        "x": 1010,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "0ffc87cbd0b976a7",
+        "type": "mqtt out",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "topic": "ENTC-Admin-ControFacAdjust",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5a443cb651cea728",
+        "x": 1050,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "e7de35a9fe6e94b4",
+        "type": "ui_date_picker",
+        "z": "c4ad50f8754a7d5a",
+        "name": "",
+        "label": "Date ",
+        "group": "8897c2bd01d08799",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 1110,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0634861928377268",
+        "type": "ui_spacer",
+        "z": "c4ad50f8754a7d5a",
+        "name": "spacer",
+        "group": "023d148b73d0f1e5",
+        "order": 1,
+        "width": 7,
+        "height": 1
+    },
+    {
+        "id": "53a86f710f0e910a",
+        "type": "ui_spacer",
+        "z": "c4ad50f8754a7d5a",
+        "name": "spacer",
+        "group": "4ad3c7e7c34b97e3",
+        "order": 1,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "2d972056effdb56a",
+        "type": "ui_spacer",
+        "z": "c4ad50f8754a7d5a",
+        "name": "spacer",
+        "group": "4ad3c7e7c34b97e3",
+        "order": 6,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "e10aa8f0f4e81efd",
+        "type": "ui_spacer",
+        "z": "c4ad50f8754a7d5a",
+        "name": "spacer",
+        "group": "8897c2bd01d08799",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "deabfa5fd7df3dca",
+        "type": "ui_spacer",
+        "z": "c4ad50f8754a7d5a",
+        "name": "spacer",
+        "group": "4ad3c7e7c34b97e3",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "cef047fad6646109",
+        "type": "ui_group",
+        "name": "Highest Light Intensity",
+        "tab": "6e8cee1f9842cce7",
+        "order": 2,
+        "disp": true,
+        "width": 7,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5a443cb651cea728",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "https://test.mosquitto.org/",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "023d148b73d0f1e5",
+        "type": "ui_group",
+        "name": "Temperature",
+        "tab": "6e8cee1f9842cce7",
+        "order": 1,
+        "disp": true,
+        "width": 7,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "4ad3c7e7c34b97e3",
+        "type": "ui_group",
+        "name": "Custom Input",
+        "tab": "6e8cee1f9842cce7",
+        "order": 4,
+        "disp": true,
+        "width": 8,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8897c2bd01d08799",
+        "type": "ui_group",
+        "name": "Date Time",
+        "tab": "6e8cee1f9842cce7",
+        "order": 3,
+        "disp": true,
+        "width": 8,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "6e8cee1f9842cce7",
+        "type": "ui_tab",
+        "name": "Medibox",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
